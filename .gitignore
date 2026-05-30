@@ -60,6 +60,13 @@ ehthumbs.db
 *.temp
 .cache
 
+# Translation tooling (local Python venv + caches)
+.venv-translate/
+.argos-data/
+scripts/.lv-translation-cache.json
+scripts/.lv-tool-content-cache.json
+scripts/.tool-content-en.json
+
 # Reference project (if not needed in repo)
 bentopdf-main
 # Comparison/debug files

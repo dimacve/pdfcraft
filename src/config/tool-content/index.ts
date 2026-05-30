@@ -15,6 +15,7 @@ export { toolContentAr } from './ar';
 export { toolContentIt } from './it';
 export { toolContentId } from './id';
 export { toolContentVn } from './vi';
+export { toolContentLv } from './lv';
 
 import { toolContentEn } from './en';
 import { toolContentJa } from './ja';
@@ -28,9 +29,10 @@ import { toolContentAr } from './ar';
 import { toolContentIt } from './it';
 import { toolContentId } from './id';
 import { toolContentVn } from './vi';
+import { toolContentLv } from './lv';
 import { ToolContent } from '@/types/tool';
 
-export type Locale = 'en' | 'ja' | 'ko' | 'es' | 'fr' | 'de' | 'zh' | 'zh-TW' | 'pt' | 'ar' | 'it' | 'id' | 'vi';
+export type Locale = 'en' | 'ja' | 'ko' | 'es' | 'fr' | 'de' | 'zh' | 'zh-TW' | 'pt' | 'ar' | 'it' | 'id' | 'vi' | 'lv';
 
 /**
  * Get tool content for a specific locale
@@ -52,6 +54,7 @@ export function getToolContent(locale: Locale, toolId: string): ToolContent | un
     it: toolContentIt,
     id: toolContentId,
     vi: toolContentVn,
+    lv: toolContentLv,
   };
 
   // Map zh-TW to zh (use Simplified Chinese content for Traditional Chinese)

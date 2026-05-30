@@ -1,8 +1,35 @@
 services:
+  pdfcraft:
+    build: .
+    image: ghcr.io/pdfcrafttool/pdfcraft:latest
+    container_name: pdfcraft
+    restart: unless-stopped
+    ports:
+      - "10010:80"
+    volumes:
+      # Paliekošie dati
+      - ./.docker/data:/data
+      # Docker configs un darba dati
+      - ./.docker:/config
+    networks:
+      pdfcraft_net:
+        ipv4_address: 172.244.10.10
+    profiles:
+      - prod
+
   web-dev:
     image: node:22-alpine
     working_dir: /app
-    command: sh -c "npm ci && npm run dev -- --hostname 0.0.0.0 --port 3000"
+    command: >
+      sh -c "
+        if [ ! -x node_modules/.bin/next ]; then
+          echo '>>> npm ci (pirma palaišana, ~2 min)...';
+          npm ci;
+        else
+          echo '>>> node_modules gatavs, palaiž dev serveri...';
+        fi &&
+        npm run dev -- --hostname 0.0.0.0 --port 3000
+      "
     ports:
       - "3000:3000"
     environment:
@@ -15,30 +42,12 @@ services:
     profiles:
       - dev
 
-  builder:
-    image: node:22-alpine
-    working_dir: /app
-    command: sh -c "npm ci && npm run build && rm -rf /out/* && cp -r out/* /out/"
-    volumes:
-      - ./:/app
-      - static_out:/out
-    profiles:
-      - prod
-
-  web:
-    image: nginx:1.25-alpine
-    ports:
-      - "8080:80"
-    volumes:
-      - static_out:/website/pdfcraft:ro
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./security-headers.conf:/etc/nginx/security-headers.conf:ro
-    depends_on:
-      builder:
-        condition: service_completed_successfully
-    profiles:
-      - prod
+networks:
+  pdfcraft_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.244.10.0/24
 
 volumes:
   node_modules:
-  static_out:
